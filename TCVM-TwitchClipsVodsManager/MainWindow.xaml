@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TCVM_TwitchClipsVodsManager"
+        xmlns:properties="clr-namespace:TCVM_TwitchClipsVodsManager.Properties"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         MinWidth="920"
@@ -75,33 +76,62 @@
         </Style>
     </Window.Resources>
     <Grid>
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition MinWidth="220" MaxWidth="220"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <StackPanel Background="#1B1B1B" Orientation="Vertical">
-            <Image Source="icons/logo.png" Height="200" Margin="0,10,0,0" MouseDown="Image_MouseDown"></Image>
-            <Button x:Name="btnClips" Style="{StaticResource CategoryButton}" Margin="0,30,0,0" Height="60" Click="btnClips_Click">
+        <DockPanel Background="#1B1B1B" LastChildFill="False">
+            
+            <Image Source="icons/logo.png" Height="200" Margin="0,10,0,0" MouseDown="Image_MouseDown" DockPanel.Dock="Top"></Image>
+            <Button x:Name="btnClips" Style="{StaticResource CategoryButton}" Margin="0,30,0,0" Height="60" Click="btnClips_Click" DockPanel.Dock="Top">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="icons/claqueta.png" Width="40" Margin="0,0,15,0"/>
                     <TextBlock Text="Show Clips" VerticalAlignment="Center" Foreground="White" FontSize="25"/>
                 </StackPanel>
             </Button>
 
-            <Button x:Name="btnVods" Style="{StaticResource CategoryButton}" Margin="0,25,0,0" Height="60">
+            <Button x:Name="btnVods" Style="{StaticResource CategoryButton}" Margin="0,25,0,0" Height="60" DockPanel.Dock="Top">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="icons/claqueta.png" Width="40" Margin="0,0,15,0"/>
                     <TextBlock Text="Show Vods" VerticalAlignment="Center" Foreground="White" FontSize="25"/>
                 </StackPanel>
             </Button>
-        </StackPanel>
 
-        <Grid x:Name="home" Grid.Column="1" Background="#262626" Visibility="Visible">
+            <Button x:Name="btnSettings" Style="{StaticResource CategoryButton}" Height="60" DockPanel.Dock="Bottom" Margin="0,0,0,30" Click="btnSettings_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="icons/settings.png" Width="40" Margin="0,0,15,0"/>
+                    <TextBlock Text="Settings" VerticalAlignment="Center" Foreground="White" FontSize="25"/>
+                </StackPanel>
+            </Button>
+
+            <Button x:Name="btnLogin" Style="{StaticResource CategoryButton}" Height="60" DockPanel.Dock="Bottom" Margin="0,0,0,30">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="icons/login.png" Width="40" Margin="0,0,15,0"/>
+                    <TextBlock Text="Login" VerticalAlignment="Center" Foreground="White" FontSize="25"/>
+                </StackPanel>
+            </Button>
+        </DockPanel>
+
+        <Grid x:Name="home" Grid.Column="1" Background="#262626" Visibility="Collapsed">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Image Source="icons/logo.png" Height="200" DockPanel.Dock="Top"></Image>
                 <TextBlock Text="Welcome to TwitchClipsVodsManager!" FontSize="35" Foreground="White"></TextBlock>
             </StackPanel>
             <TextBlock Text="Beta 06/2020" FontSize="18" Foreground="#D4A6FF" VerticalAlignment="Bottom"></TextBlock>
+        </Grid>
+
+        <Grid x:Name="settinsScreen" Grid.Column="1" Background="#262626" Visibility="Visible">
+            <StackPanel VerticalAlignment="Center">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
+                    <TextBlock Text="Clips save path: " FontSize="35" Foreground="White"></TextBlock>
+                    <Button x:Name="btnChangeClipPath" FontSize="35" Foreground="White" Background="#262626" BorderBrush="#5600A7" BorderThickness="3" Width="800" Click="btnChangeClipPath_Click"/>
+                </StackPanel>
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,50,0,0">
+                    <TextBlock Text="Vods save path: " FontSize="35" Foreground="White"></TextBlock>
+                    <Button x:Name="btnChangeVodPath" FontSize="35" Foreground="White" Background="#262626" BorderBrush="#5600A7" BorderThickness="3" Width="800" Click="btnChangeVodPath_Click"/>
+                </StackPanel>
+            </StackPanel>
         </Grid>
 
         <DockPanel x:Name="content" Grid.Column="1" Background="#262626" LastChildFill="True" Visibility="Collapsed">

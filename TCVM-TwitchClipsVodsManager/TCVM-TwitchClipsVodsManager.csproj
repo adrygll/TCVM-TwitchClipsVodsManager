@@ -40,6 +40,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -103,6 +104,12 @@
     <Resource Include="icons\claqueta.png" />
     <Resource Include="icons\logo.png" />
     <Resource Include="icons\twitch.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\login.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

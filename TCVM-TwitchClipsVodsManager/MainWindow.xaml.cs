@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -11,6 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -32,11 +34,14 @@ namespace TCVM_TwitchClipsVodsManager
         public MainWindow()
         {
             InitializeComponent();
+            settingsManagment();
         }
 
         private void btnClips_Click(object sender, RoutedEventArgs e)
         {
             btnClips.Style = (Style)FindResource("ButtonClicked");
+            btnVods.Style = (Style)FindResource("CategoryButton");
+            btnSettings.Style = (Style)FindResource("CategoryButton");
             content.Visibility = Visibility.Visible;
         }
 
@@ -73,7 +78,7 @@ namespace TCVM_TwitchClipsVodsManager
             }
             catch (WebException we)
             {
-                MessageBox.Show($"{we.Message} \n\n • Please make sure the channel name exists", "Error remoto", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show($"{we.Message} \n\n • Please make sure the channel name exists", "Error remoto", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -102,8 +107,10 @@ namespace TCVM_TwitchClipsVodsManager
         private void Image_MouseDown(object sender, MouseButtonEventArgs e)
         {
             content.Visibility = Visibility.Collapsed;
+            settinsScreen.Visibility = Visibility.Collapsed;
             btnClips.Style = (Style)FindResource("CategoryButton");
             btnVods.Style = (Style)FindResource("CategoryButton");
+            btnSettings.Style = (Style)FindResource("CategoryButton");
             home.Visibility = Visibility.Visible;
         }
 
@@ -111,13 +118,58 @@ namespace TCVM_TwitchClipsVodsManager
         {
             if (clipList.SelectedItem == null)
             {
-                MessageBox.Show("No clip selected", "Selection error", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show("No clip selected", "Selection error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else
             {
                 Clip c = (Clip)clipList.SelectedItem;
                 System.Diagnostics.Process.Start($"https://clips.twitch.tv/{c.Slug}");
             }
+        }
+
+        private void btnSettings_Click(object sender, RoutedEventArgs e)
+        {
+            btnClips.Style = (Style)FindResource("CategoryButton");
+            btnVods.Style = (Style)FindResource("CategoryButton");
+            btnSettings.Style = (Style)FindResource("ButtonClicked");
+            settinsScreen.Visibility = Visibility.Visible;
+            content.Visibility = Visibility.Collapsed;
+            home.Visibility = Visibility.Collapsed;
+
+        }
+
+        private void btnChangeClipPath_Click(object sender, RoutedEventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    Properties.Settings.Default.clipPath = fbd.SelectedPath;
+                    btnChangeClipPath.Content = Properties.Settings.Default.clipPath;
+                }
+            }
+        }
+
+        private void btnChangeVodPath_Click(object sender, RoutedEventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    Properties.Settings.Default.vodPath = fbd.SelectedPath;
+                    btnChangeVodPath.Content = Properties.Settings.Default.vodPath;
+                }
+            }
+        }
+
+        private void settingsManagment()
+        {
+            btnChangeClipPath.Content = Properties.Settings.Default.clipPath;
+            btnChangeVodPath.Content = Properties.Settings.Default.vodPath;
         }
     }
 }
