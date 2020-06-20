@@ -8,6 +8,7 @@ namespace TCVM_TwitchClipsVodsManager
 {
     class Clip
     {
+        private string id;
         private string slug;
         private string game;
         private string title;
@@ -16,8 +17,9 @@ namespace TCVM_TwitchClipsVodsManager
         private DateTime date;
         private string[] thumbnails;
 
-        public Clip(string slug, string game, string title, int views, int duration, DateTime date, string[] thumbnails)
+        public Clip(string id, string slug, string game, string title, int views, int duration, DateTime date, string[] thumbnails)
         {
+            this.Id = id;
             this.Slug = slug;
             this.Game = game;
             this.Title = title;
@@ -34,5 +36,6 @@ namespace TCVM_TwitchClipsVodsManager
         public int Duration { get => duration; set => duration = value; }
         public DateTime Date { get => date; set => date = value; }
         public string[] Thumbnails { get => thumbnails; set => thumbnails = value; }
+        public string Id { get => id; set => id = value; }
     }
 }

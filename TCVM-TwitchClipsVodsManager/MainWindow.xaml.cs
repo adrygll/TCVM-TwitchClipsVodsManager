@@ -6,6 +6,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Web;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,6 +22,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Microsoft.Web.WebView2.Wpf;
+using System.Threading;
+using System.Net.Http.Headers;
 
 namespace TCVM_TwitchClipsVodsManager
 {
@@ -89,6 +94,7 @@ namespace TCVM_TwitchClipsVodsManager
             JObject json = JsonConvert.DeserializeObject<JObject>(responseFromServer);
             foreach (JObject obj in json["clips"])
             {
+                string id = (string)obj.GetValue("tracking_id");
                 string slug = (string)obj.GetValue("slug");
                 string game = (string)obj.GetValue("game");
                 string title = (string)obj.GetValue("title");
@@ -98,7 +104,7 @@ namespace TCVM_TwitchClipsVodsManager
                 thumbnails[0] = (string)obj.GetValue("thumbnails")["medium"];
                 thumbnails[1] = (string)obj.GetValue("thumbnails")["small"];
                 thumbnails[2] = (string)obj.GetValue("thumbnails")["tiny"];
-                clips.Add(new Clip(slug, game, title, views, duration, d, thumbnails));
+                clips.Add(new Clip(id, slug, game, title, views, duration, d, thumbnails));
             }
             this.clipList.ItemsSource = clips;
             clipList.Items.SortDescriptions.Add(new SortDescription("Date", ListSortDirection.Descending));
@@ -170,6 +176,65 @@ namespace TCVM_TwitchClipsVodsManager
         {
             btnChangeClipPath.Content = Properties.Settings.Default.clipPath;
             btnChangeVodPath.Content = Properties.Settings.Default.vodPath;
+        }
+
+        private void btnDownloadClip_Click(object sender, RoutedEventArgs e)
+        {
+            List<Clip> clipsToDownload = clipList.SelectedItems.Cast<Clip>().ToList();
+            foreach (Clip c in clipsToDownload)
+            {
+                Console.WriteLine(GetClipUri(c.Slug));
+            }
+        }
+
+        static string GetClipUri(string clipId)
+        {
+            var gql = new JArray
+            {
+                new JObject()
+                {
+                    ["extensions"] = new JObject()
+                    {
+                        ["persistedQuery"] = new JObject()
+                        {
+                            ["version"] = 1,
+                            ["sha256Hash"] = "9bfcc0177bffc730bd5a5a89005869d2773480cf1738c592143b5173634b7d15"
+                        }
+                    },
+                    ["operationName"] = "VideoAccessToken_Clip",
+                    ["variables"] = new JObject()
+                    {
+                        ["slug"] = clipId
+                    }
+                }
+            };
+            var content = gql.ToString(Newtonsoft.Json.Formatting.None);
+            var http = GetHttpClient();
+            var result = http.PostAsync("https://gql.twitch.tv/gql", new StringContent(content)).GetAwaiter().GetResult().Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            var json = JArray.Parse(result);
+
+            var nullcheck = json.SelectToken("[0].data.clip")?.Type == JTokenType.Null;
+            if (nullcheck)
+            {
+                //File.AppendAllText(Path.Combine(RootPath, "error.log"), $"[{DateTime.Now}] {clipId} clip missing: payload: {result}" + Environment.NewLine);
+                throw new Exception("Clip not found");
+            }
+
+            var sourceUrl = json.SelectToken("[0].data.clip.videoQualities[0].sourceURL")?.ToString();
+            if (sourceUrl == null)
+            {
+                //File.AppendAllText(Path.Combine(RootPath, "error.log"), $"[{DateTime.Now}] {clipId} download failed: payload: {result}" + Environment.NewLine);
+                throw new Exception("Download failed");
+            }
+            return sourceUrl;
+        }
+        static HttpClient GetHttpClient()
+        {
+            string token = "ucy3hzr7rwhfr8kumr4lfahyojr0e6";
+            var http = new HttpClient();
+            http.DefaultRequestHeaders.Add("Client-ID", ID);
+            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("OAuth", token);
+            return http;
         }
     }
 }

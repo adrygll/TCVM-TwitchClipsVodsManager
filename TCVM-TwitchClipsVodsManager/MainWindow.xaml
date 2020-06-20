@@ -3,8 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TCVM_TwitchClipsVodsManager"
-        xmlns:properties="clr-namespace:TCVM_TwitchClipsVodsManager.Properties"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         MinWidth="920"
@@ -113,7 +111,7 @@
             </Button>
         </DockPanel>
 
-        <Grid x:Name="home" Grid.Column="1" Background="#262626" Visibility="Collapsed">
+        <Grid x:Name="home" Grid.Column="1" Background="#262626" Visibility="Visible">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Image Source="icons/logo.png" Height="200" DockPanel.Dock="Top"></Image>
                 <TextBlock Text="Welcome to TwitchClipsVodsManager!" FontSize="35" Foreground="White"></TextBlock>
@@ -121,7 +119,7 @@
             <TextBlock Text="Beta 06/2020" FontSize="18" Foreground="#D4A6FF" VerticalAlignment="Bottom"></TextBlock>
         </Grid>
 
-        <Grid x:Name="settinsScreen" Grid.Column="1" Background="#262626" Visibility="Visible">
+        <Grid x:Name="settinsScreen" Grid.Column="1" Background="#262626" Visibility="Collapsed">
             <StackPanel VerticalAlignment="Center">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
                     <TextBlock Text="Clips save path: " FontSize="35" Foreground="White"></TextBlock>
@@ -144,7 +142,7 @@
             <StackPanel x:Name="actionPanel" Height="80" Background="#262626" DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button x:Name="btnOpenClip" Content="Open" Height="50" Width="150" Style="{StaticResource CategoryButton}" Foreground="White" FontSize="25" Click="btnOpenClip_Click"/>
                 <Button x:Name="btnDeleteClip" Content="Delete" Height="50" Width="150" Margin="50,0,0,0" Style="{StaticResource CategoryButton}" Foreground="White" FontSize="25"/>
-                <Button x:Name="btnDownloadClip" Content="Download" Height="50" Width="150" Margin="50,0,0,0" Style="{StaticResource CategoryButton}" Foreground="White" FontSize="25"/>
+                <Button x:Name="btnDownloadClip" Content="Download" Height="50" Width="150" Margin="50,0,0,0" Style="{StaticResource CategoryButton}" Foreground="White" FontSize="25" Click="btnDownloadClip_Click"/>
             </StackPanel>
             <DataGrid x:Name="clipList" CanUserAddRows="False" AutoGenerateColumns="False" FontSize="15" VerticalScrollBarVisibility="Auto" IsReadOnly="True">
                 <DataGrid.Columns>
